@@ -1,0 +1,73 @@
+:root {
+    --ucu-green: #006633;
+    --ucu-blue: #003366;
+    --ucu-red: #cc0000;
+    --ucu-white: #ffffff;
+}
+
+body {
+    background-color: #f8f9fa;
+    color: var(--ucu-blue);
+    font-family: 'Aptos', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+.navbar {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
+}
+
+.card {
+    border: none;
+    border-radius: 10px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.hover-shadow:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15) !important;
+}
+
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
+
+.btn-primary {
+    background-color: var(--ucu-blue);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+}
+
+.btn-primary:hover {
+    background-color: #002244;
+    /* Darker blue */
+}
+
+.btn-success {
+    background-color: var(--ucu-green);
+    border: none;
+}
+
+.btn-success:hover {
+    background-color: #004d26;
+    /* Darker green */
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: var(--ucu-blue);
+}
+
+.badge {
+    font-weight: 500;
+}
