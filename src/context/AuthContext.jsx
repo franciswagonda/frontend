@@ -14,7 +14,7 @@ export const AuthProvider = ({ children }) => {
             if (token) {
                 try {
                     // Ideally verify token with backend here, for now just decode or assume valid if not expired
-                    // For MVP, we'll store user info in local storage too or fetch profile
+                    
                     const storedUser = JSON.parse(localStorage.getItem('user'));
                     setUser(storedUser);
                 } catch (error) {
