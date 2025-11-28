@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react';
-import { Form, Button, Container, Alert } from 'react-bootstrap';
+import { Form, Button, Container, Alert, InputGroup } from 'react-bootstrap';
 import AuthContext from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -13,6 +13,7 @@ const Register = () => {
         department_id: 1 // Default to first dept for MVP
     });
     const [error, setError] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const { register } = useContext(AuthContext);
     const navigate = useNavigate();
 
@@ -61,14 +62,24 @@ const Register = () => {
 
                 <Form.Group className="mb-3">
                     <Form.Label>Password</Form.Label>
-                    <Form.Control
-                        type="password"
-                        name="password"
-                        placeholder="Password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        required
-                    />
+                    <InputGroup>
+                        <Form.Control
+                            type={showPassword ? "text" : "password"}
+                            name="password"
+                            placeholder="Password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            required
+                            style={{ borderRight: 'none' }}
+                        />
+                        <Button
+                            variant="outline-secondary"
+                            onClick={() => setShowPassword(!showPassword)}
+                            style={{ borderLeft: 'none' }}
+                        >
+                            <i className={`bi bi-eye${showPassword ? '-slash' : ''}-fill`}></i>
+                        </Button>
+                    </InputGroup>
                 </Form.Group>
 
                 <Form.Group className="mb-3">

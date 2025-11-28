@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Form, Button, Container, Alert } from 'react-bootstrap';
+import { Form, Button, Container, Alert, InputGroup } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import bishopTuckerImage from '../assets/BISHOP-TUCKER-BUILDING.jpeg';
@@ -10,6 +10,8 @@ const ResetPassword = () => {
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const navigate = useNavigate();
     const { token } = useParams();
 
@@ -102,35 +104,57 @@ const ResetPassword = () => {
                         </p>
 
                         <Form onSubmit={handleSubmit}>
-                            <Form.Control
-                                type="password"
-                                placeholder="New Password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                                className="mb-3"
-                                style={{
-                                    borderRadius: '5px',
-                                    padding: '12px',
-                                    border: '1px solid #ccc',
-                                    backgroundColor: '#f8f9fa'
-                                }}
-                            />
+                            <InputGroup className="mb-3">
+                                <Form.Control
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder="New Password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                    style={{
+                                        borderRight: 'none',
+                                        padding: '12px',
+                                        backgroundColor: '#f8f9fa'
+                                    }}
+                                />
+                                <Button
+                                    variant="outline-secondary"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    style={{
+                                        borderLeft: 'none',
+                                        backgroundColor: '#f8f9fa',
+                                        color: '#6c757d'
+                                    }}
+                                >
+                                    <i className={`bi bi-eye${showPassword ? '-slash' : ''}-fill`}></i>
+                                </Button>
+                            </InputGroup>
 
-                            <Form.Control
-                                type="password"
-                                placeholder="Confirm New Password"
-                                value={confirmPassword}
-                                onChange={(e) => setConfirmPassword(e.target.value)}
-                                required
-                                className="mb-3"
-                                style={{
-                                    borderRadius: '5px',
-                                    padding: '12px',
-                                    border: '1px solid #ccc',
-                                    backgroundColor: '#f8f9fa'
-                                }}
-                            />
+                            <InputGroup className="mb-3">
+                                <Form.Control
+                                    type={showConfirmPassword ? "text" : "password"}
+                                    placeholder="Confirm New Password"
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    required
+                                    style={{
+                                        borderRight: 'none',
+                                        padding: '12px',
+                                        backgroundColor: '#f8f9fa'
+                                    }}
+                                />
+                                <Button
+                                    variant="outline-secondary"
+                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                    style={{
+                                        borderLeft: 'none',
+                                        backgroundColor: '#f8f9fa',
+                                        color: '#6c757d'
+                                    }}
+                                >
+                                    <i className={`bi bi-eye${showConfirmPassword ? '-slash' : ''}-fill`}></i>
+                                </Button>
+                            </InputGroup>
                             
                             <Button 
                                 type="submit" 

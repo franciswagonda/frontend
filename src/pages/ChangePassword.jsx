@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Container, Card, Form, Button, Alert } from 'react-bootstrap';
+import { Container, Card, Form, Button, Alert, InputGroup } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -10,6 +10,9 @@ const ChangePassword = () => {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [loading, setLoading] = useState(false);
+    const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -79,35 +82,65 @@ const ChangePassword = () => {
                         <Form onSubmit={handleSubmit}>
                             <Form.Group className="mb-3">
                                 <Form.Label>Current Password *</Form.Label>
-                                <Form.Control
-                                    type="password"
-                                    value={currentPassword}
-                                    onChange={(e) => setCurrentPassword(e.target.value)}
-                                    placeholder="Enter current password"
-                                    required
-                                />
+                                <InputGroup>
+                                    <Form.Control
+                                        type={showCurrentPassword ? "text" : "password"}
+                                        value={currentPassword}
+                                        onChange={(e) => setCurrentPassword(e.target.value)}
+                                        placeholder="Enter current password"
+                                        required
+                                        style={{ borderRight: 'none' }}
+                                    />
+                                    <Button
+                                        variant="outline-secondary"
+                                        onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                                        style={{ borderLeft: 'none' }}
+                                    >
+                                        <i className={`bi bi-eye${showCurrentPassword ? '-slash' : ''}-fill`}></i>
+                                    </Button>
+                                </InputGroup>
                             </Form.Group>
 
                             <Form.Group className="mb-3">
                                 <Form.Label>New Password *</Form.Label>
-                                <Form.Control
-                                    type="password"
-                                    value={newPassword}
-                                    onChange={(e) => setNewPassword(e.target.value)}
-                                    placeholder="Enter new password (min 6 characters)"
-                                    required
-                                />
+                                <InputGroup>
+                                    <Form.Control
+                                        type={showNewPassword ? "text" : "password"}
+                                        value={newPassword}
+                                        onChange={(e) => setNewPassword(e.target.value)}
+                                        placeholder="Enter new password (min 6 characters)"
+                                        required
+                                        style={{ borderRight: 'none' }}
+                                    />
+                                    <Button
+                                        variant="outline-secondary"
+                                        onClick={() => setShowNewPassword(!showNewPassword)}
+                                        style={{ borderLeft: 'none' }}
+                                    >
+                                        <i className={`bi bi-eye${showNewPassword ? '-slash' : ''}-fill`}></i>
+                                    </Button>
+                                </InputGroup>
                             </Form.Group>
 
                             <Form.Group className="mb-4">
                                 <Form.Label>Confirm New Password *</Form.Label>
-                                <Form.Control
-                                    type="password"
-                                    value={confirmPassword}
-                                    onChange={(e) => setConfirmPassword(e.target.value)}
-                                    placeholder="Re-enter new password"
-                                    required
-                                />
+                                <InputGroup>
+                                    <Form.Control
+                                        type={showConfirmPassword ? "text" : "password"}
+                                        value={confirmPassword}
+                                        onChange={(e) => setConfirmPassword(e.target.value)}
+                                        placeholder="Re-enter new password"
+                                        required
+                                        style={{ borderRight: 'none' }}
+                                    />
+                                    <Button
+                                        variant="outline-secondary"
+                                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                        style={{ borderLeft: 'none' }}
+                                    >
+                                        <i className={`bi bi-eye${showConfirmPassword ? '-slash' : ''}-fill`}></i>
+                                    </Button>
+                                </InputGroup>
                             </Form.Group>
 
                             <div className="d-flex gap-2">

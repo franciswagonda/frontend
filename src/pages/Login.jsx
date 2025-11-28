@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react';
-import { Form, Button, Container, Alert, Modal } from 'react-bootstrap';
+import { Form, Button, Container, Alert, Modal, InputGroup } from 'react-bootstrap';
 import AuthContext from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import bishopTuckerImage from '../assets/BISHOP-TUCKER-BUILDING.jpeg';
@@ -9,6 +9,7 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [showTerms, setShowTerms] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const { login } = useContext(AuthContext);
     const navigate = useNavigate();
 
@@ -98,20 +99,31 @@ const Login = () => {
                                     NEXT <i className="bi bi-chevron-right ms-1"></i>
                                 </Button>
                             </div>
-                            <Form.Control
-                                type="password"
-                                placeholder="Password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                                className="mt-3"
-                                style={{
-                                    borderRadius: '5px',
-                                    padding: '12px',
-                                    border: '1px solid #ccc',
-                                    backgroundColor: '#f8f9fa'
-                                }}
-                            />
+                            <InputGroup className="mt-3">
+                                <Form.Control
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder="Password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                    style={{
+                                        borderRight: 'none',
+                                        padding: '12px',
+                                        backgroundColor: '#f8f9fa'
+                                    }}
+                                />
+                                <Button
+                                    variant="outline-secondary"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    style={{
+                                        borderLeft: 'none',
+                                        backgroundColor: '#f8f9fa',
+                                        color: '#6c757d'
+                                    }}
+                                >
+                                    <i className={`bi bi-eye${showPassword ? '-slash' : ''}-fill`}></i>
+                                </Button>
+                            </InputGroup>
 
                             <div className="text-center mt-4">
                                 <small style={{ color: '#fff' }}>By signing in, I agree to the <span 

@@ -16,9 +16,8 @@ const UserManagement = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    password: '',
-    alternativeEmail: '',
-    role: 'student',
+    personalEmail: '',
+    role: 'faculty_admin',
     faculty_id: '',
     department_id: ''
   });
@@ -68,37 +67,33 @@ const UserManagement = () => {
     setError('');
     setMessage('');
     try {
-      if (!formData.name || !formData.email) {
-        setError('Name and Email are required');
-        return;
-      }
-      if (formData.role === 'supervisor' && !formData.alternativeEmail) {
-        setError('Alternative email is required for supervisors');
-        return;
-      }
-      if (formData.role !== 'supervisor' && !formData.password) {
-        setError('Password is required for students and admins');
+      if (!formData.name || !formData.email || !formData.personalEmail) {
+        setError('Name, UCU Email, and Personal Email are required');
         return;
       }
       
       // Validate UCU email for login email
       if (!formData.email.endsWith('@ucu.ac.ug')) {
-        setError('Email must be a valid UCU email (@ucu.ac.ug)');
-        return;
-      }
-      // Validate alternative email format (very basic)
-      if (formData.role === 'supervisor' && formData.alternativeEmail && !formData.alternativeEmail.includes('@')) {
-        setError('Alternative email must be a valid email address');
+        setError('UCU Email must end with @ucu.ac.ug');
         return;
       }
       
-      // For supervisors, don't send a password; backend will generate one and send to alternativeEmail
-      const payload = { ...formData };
-      if (formData.role === 'supervisor') {
-        delete payload.password;
+      // System admin can only create faculty_admin
+      if (user.role === 'admin' && formData.role !== 'faculty_admin') {
+        setError('System admin can only create Faculty Admins');
+        return;
       }
+      
+      // Validate personal email
+      if (!formData.personalEmail.includes('@')) {
+        setError('Personal email must be a valid email address');
+        return;
+      }
+      
+      // Send alternativeEmail as the personal email to backend
+      const payload = { ...formData, alternativeEmail: formData.personalEmail };
       const res = await createUser(payload);
-      setMessage(`User ${res.user.email} created successfully`);
+      setMessage(`User ${res.user.email} created successfully. Credentials sent to ${formData.personalEmail}.`);
       
       // Refresh users list
       const token = localStorage.getItem('token');
@@ -107,12 +102,12 @@ const UserManagement = () => {
       });
       setUsers(usersRes.data);
       
-      // Reset form but keep faculty_id for faculty_admin
+      // Reset form
       setFormData({ 
         name: '', 
         email: '', 
-        password: '', 
-        role: 'student', 
+        personalEmail: '',
+        role: user.role === 'admin' ? 'faculty_admin' : 'student', 
         faculty_id: user.role === 'faculty_admin' ? user.faculty_id : '', 
         department_id: '' 
       });
@@ -169,7 +164,12 @@ const UserManagement = () => {
       {error && <Alert variant="danger" onClose={() => setError('')} dismissible>{error}</Alert>}
 
       <Card className="mb-4 p-3 shadow-sm">
-        <h5>➕ Create New User</h5>
+        <h5>➕ {user.role === 'admin' ? 'Create Faculty Admin' : 'Create New User'}</h5>
+        {user.role === 'admin' && (
+          <Alert variant="info" className="mb-3">
+            System admins can only create Faculty Admin accounts. All other users are managed by Faculty Admins.
+          </Alert>
+        )}
         <Form onSubmit={handleSubmit}>
           <Row>
             <Col md={4}>
@@ -186,7 +186,7 @@ const UserManagement = () => {
             </Col>
             <Col md={4}>
               <Form.Group className="mb-3">
-                <Form.Label>UCU Email <span className="text-danger">*</span></Form.Label>
+                <Form.Label>UCU Email (for login) <span className="text-danger">*</span></Form.Label>
                 <Form.Control 
                   type="email" 
                   name="email" 
@@ -198,99 +198,125 @@ const UserManagement = () => {
                 <Form.Text className="text-muted">Must end with @ucu.ac.ug</Form.Text>
               </Form.Group>
             </Col>
-            {/* Show password for non-supervisors; for supervisors we collect alternativeEmail instead */}
-            {formData.role !== 'supervisor' ? (
-              <Col md={4}>
-                <Form.Group className="mb-3">
-                  <Form.Label>Password <span className="text-danger">*</span></Form.Label>
-                  <Form.Control 
-                    type="password" 
-                    name="password" 
-                    value={formData.password} 
-                    onChange={handleChange}
-                    placeholder="Minimum 6 characters"
-                    minLength={6}
-                    required 
-                  />
-                </Form.Group>
-              </Col>
-            ) : (
-              <Col md={4}>
-                <Form.Group className="mb-3">
-                  <Form.Label>Alternative Email (for password delivery) <span className="text-danger">*</span></Form.Label>
-                  <Form.Control
-                    type="email"
-                    name="alternativeEmail"
-                    value={formData.alternativeEmail}
-                    onChange={handleChange}
-                    placeholder="Personal email where temporary password will be sent"
-                    required
-                  />
-                  <Form.Text className="text-muted">Temporary password will be sent to this address, not the UCU email.</Form.Text>
-                </Form.Group>
-              </Col>
-            )}
+            <Col md={4}>
+              <Form.Group className="mb-3">
+                <Form.Label>Personal Email (for credentials) <span className="text-danger">*</span></Form.Label>
+                <Form.Control 
+                  type="email" 
+                  name="personalEmail" 
+                  value={formData.personalEmail} 
+                  onChange={handleChange}
+                  placeholder="user@gmail.com"
+                  required 
+                />
+                <Form.Text className="text-muted">Login credentials will be sent here</Form.Text>
+              </Form.Group>
+            </Col>
           </Row>
           <Row>
-            <Col md={3}>
-              <Form.Group className="mb-3">
-                <Form.Label>Role <span className="text-danger">*</span></Form.Label>
-                <Form.Select name="role" value={formData.role} onChange={handleChange}>
-                  <option value="student">Student</option>
-                  <option value="supervisor">Supervisor</option>
-                  {user.role === 'admin' && <option value="faculty_admin">Faculty Admin</option>}
-                  {user.role === 'admin' && <option value="admin">System Admin</option>}
-                </Form.Select>
-              </Form.Group>
-            </Col>
-            <Col md={3}>
-              <Form.Group className="mb-3">
-                <Form.Label>Faculty</Form.Label>
-                <Form.Select
-                  name="faculty_id" 
-                  value={formData.faculty_id} 
-                  onChange={handleChange}
-                  disabled={user.role === 'faculty_admin'}
-                  required
-                >
-                  <option value="">Select Faculty</option>
-                  {faculties.map(f => (
-                    <option key={f.id} value={f.id}>{f.name}</option>
-                  ))}
-                </Form.Select>
-                {user.role === 'faculty_admin' && (
-                  <Form.Text className="text-muted">Locked to your faculty</Form.Text>
-                )}
-              </Form.Group>
-            </Col>
-            <Col md={3}>
-              <Form.Group className="mb-3">
-                <Form.Label>Department</Form.Label>
-                <Form.Select
-                  name="department_id" 
-                  value={formData.department_id} 
-                  onChange={handleChange}
-                >
-                  <option value="">Select Department</option>
-                  {departments
-                    .filter(d => !formData.faculty_id || d.faculty_id == formData.faculty_id)
-                    .map(d => (
-                      <option key={d.id} value={d.id}>{d.name}</option>
-                    ))}
-                </Form.Select>
-              </Form.Group>
-            </Col>
-            <Col md={3} className="d-flex align-items-end">
-              <Button type="submit" variant="success" className="w-100 mb-3">
-                ✓ Create User
-              </Button>
-            </Col>
+            {user.role === 'admin' ? (
+              // System admin only creates faculty_admin
+              <>
+                <Col md={4}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Role</Form.Label>
+                    <Form.Control 
+                      type="text" 
+                      value="Faculty Admin" 
+                      disabled
+                    />
+                    <Form.Text className="text-muted">System admins can only create Faculty Admins</Form.Text>
+                  </Form.Group>
+                </Col>
+                <Col md={4}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Faculty <span className="text-danger">*</span></Form.Label>
+                    <Form.Select
+                      name="faculty_id" 
+                      value={formData.faculty_id} 
+                      onChange={handleChange}
+                      required
+                    >
+                      <option value="">Select Faculty</option>
+                      {faculties.map(f => (
+                        <option key={f.id} value={f.id}>{f.name}</option>
+                      ))}
+                    </Form.Select>
+                  </Form.Group>
+                </Col>
+                <Col md={4} className="d-flex align-items-end">
+                  <Button type="submit" variant="success" className="w-100 mb-3">
+                    ✓ Create Faculty Admin
+                  </Button>
+                </Col>
+              </>
+            ) : (
+              // Faculty admin creates students/supervisors
+              <>
+                <Col md={3}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Role <span className="text-danger">*</span></Form.Label>
+                    <Form.Select name="role" value={formData.role} onChange={handleChange}>
+                      <option value="student">Student</option>
+                      <option value="supervisor">Supervisor</option>
+                    </Form.Select>
+                  </Form.Group>
+                </Col>
+                <Col md={3}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Faculty</Form.Label>
+                    <Form.Select
+                      name="faculty_id" 
+                      value={formData.faculty_id} 
+                      onChange={handleChange}
+                      disabled={user.role === 'faculty_admin'}
+                      required
+                    >
+                      <option value="">Select Faculty</option>
+                      {faculties.map(f => (
+                        <option key={f.id} value={f.id}>{f.name}</option>
+                      ))}
+                    </Form.Select>
+                    {user.role === 'faculty_admin' && (
+                      <Form.Text className="text-muted">Locked to your faculty</Form.Text>
+                    )}
+                  </Form.Group>
+                </Col>
+                <Col md={3}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Department</Form.Label>
+                    <Form.Select
+                      name="department_id" 
+                      value={formData.department_id} 
+                      onChange={handleChange}
+                    >
+                      <option value="">Select Department</option>
+                      {departments
+                        .filter(d => !formData.faculty_id || d.faculty_id == formData.faculty_id)
+                        .map(d => (
+                          <option key={d.id} value={d.id}>{d.name}</option>
+                        ))}
+                    </Form.Select>
+                  </Form.Group>
+                </Col>
+                <Col md={3} className="d-flex align-items-end">
+                  <Button type="submit" variant="success" className="w-100 mb-3">
+                    ✓ Create User
+                  </Button>
+                </Col>
+              </>
+            )}
           </Row>
         </Form>
       </Card>
 
       <Card className="p-3 shadow-sm">
-        <h5 className="mb-3">📋 {user.role === 'admin' ? 'All Users' : 'Faculty Users'}</h5>
+        <h5 className="mb-3">📋 {user.role === 'admin' ? 'All Users (View Only)' : 'Faculty Users'}</h5>
+        {user.role === 'admin' && (
+          <Alert variant="warning" className="mb-3">
+            <strong>View Only Mode:</strong> System admins can view all users but can only create Faculty Admins. To manage students and supervisors, contact the respective Faculty Admin.
+          </Alert>
+        )}
         {loading ? (
           <div className="text-center py-4"><Spinner animation="border" /></div>
         ) : users.length === 0 ? (
@@ -343,7 +369,7 @@ const UserManagement = () => {
                     </td>
                     <td><small>{new Date(u.createdAt).toLocaleDateString()}</small></td>
                     <td>
-                      {u.active && !['admin', 'faculty_admin'].includes(u.role) && (
+                      {u.active && !['admin', 'faculty_admin'].includes(u.role) && user.role === 'faculty_admin' ? (
                         <Button 
                           size="sm" 
                           variant="outline-danger"
@@ -351,8 +377,7 @@ const UserManagement = () => {
                         >
                           Deactivate
                         </Button>
-                      )}
-                      {!u.active && (
+                      ) : (
                         <span className="text-muted">-</span>
                       )}
                     </td>

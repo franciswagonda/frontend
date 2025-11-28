@@ -135,6 +135,7 @@ const SupervisorDashboard = () => {
                                         <th>Category</th>
                                         <th>Technologies</th>
                                         <th>Status</th>
+                                        <th>Feedback</th>
                                         <th>Submitted</th>
                                         <th>Actions</th>
                                     </tr>
@@ -153,6 +154,13 @@ const SupervisorDashboard = () => {
                                                 }>
                                                     {project.status.toUpperCase()}
                                                 </Badge>
+                                            </td>
+                                            <td>
+                                                {project.feedback ? (
+                                                    <small className="text-muted">{project.feedback}</small>
+                                                ) : (
+                                                    <small className="text-muted">—</small>
+                                                )}
                                             </td>
                                             <td>{new Date(project.createdAt).toLocaleDateString()}</td>
                                             <td>
