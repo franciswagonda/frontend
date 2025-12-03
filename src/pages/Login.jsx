@@ -44,10 +44,25 @@ const Login = () => {
             }}></div>
 
             {/* Header */}
-            <div className="d-flex justify-content-between align-items-center px-5 py-4" style={{ color: 'white' }}>
-                <h5 className="fw-bold m-0">UCU Innovators Hub</h5>
+            <div className="d-flex justify-content-between align-items-center px-5 py-4" style={{ 
+                backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                backdropFilter: 'blur(10px)'
+            }}>
+                <h4 className="fw-bold m-0" style={{ 
+                    color: '#6495ED',
+                    textShadow: '2px 2px 4px rgba(0, 0, 0, 0.8)',
+                    letterSpacing: '0.5px'
+                }}>UCU Innovators Hub</h4>
                 <div className="d-flex gap-4">
-                    <span style={{ cursor: 'pointer' }} onClick={() => navigate('/')}><i className="bi bi-grid-fill me-2"></i>Home</span>
+                    <span style={{ 
+                        cursor: 'pointer',
+                        color: '#FFFFFF',
+                        fontWeight: 'bold',
+                        fontSize: '1.1rem',
+                        textShadow: '2px 2px 4px rgba(0, 0, 0, 0.8)'
+                    }} onClick={() => navigate('/')}>
+                        <i className="bi bi-grid-fill me-2" style={{ fontSize: '1.2rem' }}></i>Home
+                    </span>
                 </div>
             </div>
 
@@ -168,7 +183,17 @@ const Login = () => {
             </Modal>
 
             {/* Footer */}
-            <div style={{ position: 'absolute', bottom: '20px', left: '40px', color: 'white', fontSize: '0.9rem' }}>
+            <div style={{ 
+                position: 'absolute', 
+                bottom: '20px', 
+                left: '0',
+                right: '0',
+                textAlign: 'center',
+                color: '#00BFFF', 
+                fontSize: '1rem',
+                fontWeight: 'bold',
+                textShadow: '2px 2px 4px rgba(0, 0, 0, 0.8)'
+            }}>
                 &copy; 2025 Uganda Christian University
             </div>
         </div>

@@ -46,7 +46,7 @@ const AdminDashboard = () => {
     if (loading) {
         return (
             <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
-                <div className="spinner-border text-primary" role="status">
+                <div className="spinner-border text-white" role="status">
                     <span className="visually-hidden">Loading...</span>
                 </div>
             </div>
@@ -54,7 +54,7 @@ const AdminDashboard = () => {
     }
 
     return (
-        <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #051738ff 0%, #1e1f72ff 100%)', paddingBottom: '40px' }}>
+        <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #0e72acff 0%, #0cbde5ff 100%)', paddingBottom: '40px' }}>
             <Container className="pt-4">
                 <div className="mb-4 d-flex justify-content-between align-items-center">
                     <div>
@@ -77,7 +77,7 @@ const AdminDashboard = () => {
                     <Col md={3}>
                         <Card className="text-center shadow" style={{ borderTop: '4px solid #0d6efd' }}>
                             <Card.Body>
-                                <h2 className="mb-0 text-primary">{stats.totalProjects}</h2>
+                                <h2 className="mb-0 text-white">{stats.totalProjects}</h2>
                                 <small className="text-muted">Total Projects</small>
                             </Card.Body>
                         </Card>

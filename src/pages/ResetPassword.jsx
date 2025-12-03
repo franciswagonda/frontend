@@ -45,7 +45,7 @@ const ResetPassword = () => {
         }
     };
 
-    return (
+    return ( 
         <div style={{
             position: 'relative',
             minHeight: '100vh',
@@ -189,3 +189,5 @@ const ResetPassword = () => {
 };
 
 export default ResetPassword;
+
+

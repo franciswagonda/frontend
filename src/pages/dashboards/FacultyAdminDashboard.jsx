@@ -142,7 +142,7 @@ const FacultyAdminDashboard = () => {
                 <div className="mb-4 d-flex justify-content-between align-items-center">
                     <div>
                         <h2 className="text-white mb-2">Faculty Admin Dashboard</h2>
-                        <p className="text-white-50 mb-0">Welcome back, {user?.name}!</p>
+                        <h4 className="text-white mb-0" style={{ fontWeight: 'bold' }}>Welcome back, {user?.name}!</h4>
                     </div>
                     <Button 
                         variant="outline-light"
@@ -209,13 +209,13 @@ const FacultyAdminDashboard = () => {
 
                 {/* Students Table */}
                 <Card className="shadow mb-4">
-                    <Card.Header style={{ backgroundColor: '#051738ff', color: 'white' }}>
+                    <Card.Header style={{ backgroundColor: '#87CEEB', color: 'white' }}>
                         <h5 className="mb-0">Students</h5>
                     </Card.Header>
                     <Card.Body>
                         {loading ? (
                             <div className="text-center my-4">
-                                <div className="spinner-border text-primary" role="status" />
+                                <div className="spinner-border text-white" role="status" />
                             </div>
                         ) : (
                             <Table hover responsive>
@@ -263,13 +263,13 @@ const FacultyAdminDashboard = () => {
 
                 {/* Supervisors Table */}
                 <Card className="shadow mb-4">
-                    <Card.Header style={{ backgroundColor: '#1e1f72ff', color: 'white' }}>
+                    <Card.Header style={{ backgroundColor: '#00BFFF', color: 'white' }}>
                         <h5 className="mb-0">Supervisors</h5>
                     </Card.Header>
                     <Card.Body>
                         {loading ? (
                             <div className="text-center my-4">
-                                <div className="spinner-border text-primary" role="status" />
+                                <div className="spinner-border text-white" role="status" />
                             </div>
                         ) : (
                             <Table hover responsive>
@@ -315,8 +315,8 @@ const FacultyAdminDashboard = () => {
 
                 {/* Projects Table */}
                 <Card className="shadow">
-                    <Card.Header style={{ backgroundColor: '#051738ff', color: 'white' }}>
-                        <h5 className="mb-0">Faculty Projects</h5>
+                    <Card.Header style={{ backgroundColor: '#87CEEB', color: 'white' }}>
+                        <h4 className="mb-0" style={{ fontWeight: 'bold' }}>Faculty Projects</h4>
                     </Card.Header>
                     <Card.Body>
                         {projects.length === 0 ? (
