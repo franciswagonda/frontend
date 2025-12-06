@@ -144,13 +144,22 @@ const FacultyAdminDashboard = () => {
                         <h2 className="text-white mb-2">Faculty Admin Dashboard</h2>
                         <h4 className="text-white mb-0" style={{ fontWeight: 'bold' }}>Welcome back, {user?.name}!</h4>
                     </div>
-                    <Button 
-                        variant="outline-light"
-                        size="sm"
-                        onClick={() => navigate('/change-password')}
-                    >
-                        <i className="bi bi-key me-2"></i>Change Password
-                    </Button>
+                    <div className="d-flex gap-2">
+                        <Button 
+                            variant="outline-light"
+                            size="sm"
+                            onClick={() => navigate('/profile')}
+                        >
+                            <i className="bi bi-person-circle me-2"></i>My Profile
+                        </Button>
+                        <Button 
+                            variant="outline-light"
+                            size="sm"
+                            onClick={() => navigate('/change-password')}
+                        >
+                            <i className="bi bi-key me-2"></i>Change Password
+                        </Button>
+                    </div>
                 </div>
 
                 {message && <Alert variant="success" onClose={() => setMessage('')} dismissible>{message}</Alert>}
@@ -210,7 +219,7 @@ const FacultyAdminDashboard = () => {
                 {/* Students Table */}
                 <Card className="shadow mb-4">
                     <Card.Header style={{ backgroundColor: '#87CEEB', color: 'white' }}>
-                        <h5 className="mb-0">Students</h5>
+                        <h4 className="mb-0" style={{ fontWeight: 'bold', letterSpacing: '0.3px' }}>Students</h4>
                     </Card.Header>
                     <Card.Body>
                         {loading ? (
@@ -264,7 +273,7 @@ const FacultyAdminDashboard = () => {
                 {/* Supervisors Table */}
                 <Card className="shadow mb-4">
                     <Card.Header style={{ backgroundColor: '#00BFFF', color: 'white' }}>
-                        <h5 className="mb-0">Supervisors</h5>
+                        <h4 className="mb-0" style={{ fontWeight: 'bold', letterSpacing: '0.3px' }}>Supervisors</h4>
                     </Card.Header>
                     <Card.Body>
                         {loading ? (
@@ -316,7 +325,7 @@ const FacultyAdminDashboard = () => {
                 {/* Projects Table */}
                 <Card className="shadow">
                     <Card.Header style={{ backgroundColor: '#87CEEB', color: 'white' }}>
-                        <h4 className="mb-0" style={{ fontWeight: 'bold' }}>Faculty Projects</h4>
+                        <h4 className="mb-0" style={{ fontWeight: 'bold', letterSpacing: '0.3px' }}>Faculty Projects</h4>
                     </Card.Header>
                     <Card.Body>
                         {projects.length === 0 ? (

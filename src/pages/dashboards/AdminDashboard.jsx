@@ -59,15 +59,24 @@ const AdminDashboard = () => {
                 <div className="mb-4 d-flex justify-content-between align-items-center">
                     <div>
                         <h2 className="text-white mb-2">System Administrator Dashboard</h2>
-                        <p className="text-white-50 mb-0">UCU Innovators Hub - Overview & Analytics</p>
+                        <p className="text-white mb-0">UCU Innovators Hub - Overview & Analytics</p>
                     </div>
-                    <Button 
-                        variant="outline-light"
-                        size="sm"
-                        onClick={() => navigate('/change-password')}
-                    >
-                        <i className="bi bi-key me-2"></i>Change Password
-                    </Button>
+                    <div className="d-flex gap-2">
+                        <Button 
+                            variant="outline-light"
+                            size="sm"
+                            onClick={() => navigate('/profile')}
+                        >
+                            <i className="bi bi-person-circle me-2"></i>My Profile
+                        </Button>
+                        <Button 
+                            variant="outline-light"
+                            size="sm"
+                            onClick={() => navigate('/change-password')}
+                        >
+                            <i className="bi bi-key me-2"></i>Change Password
+                        </Button>
+                    </div>
                 </div>
 
                 {error && <Alert variant="warning" dismissible onClose={() => setError('')}>{error}</Alert>}
@@ -78,7 +87,7 @@ const AdminDashboard = () => {
                         <Card className="text-center shadow" style={{ borderTop: '4px solid #0d6efd' }}>
                             <Card.Body>
                                 <h2 className="mb-0 text-white">{stats.totalProjects}</h2>
-                                <small className="text-muted">Total Projects</small>
+                                <small className="text-dark">Total Projects</small>
                             </Card.Body>
                         </Card>
                     </Col>
@@ -86,7 +95,7 @@ const AdminDashboard = () => {
                         <Card className="text-center shadow" style={{ borderTop: '4px solid #28a745' }}>
                             <Card.Body>
                                 <h2 className="mb-0 text-success">{stats.totalViews}</h2>
-                                <small className="text-muted">Total Views</small>
+                                <small className="text-dark">Total Views</small>
                             </Card.Body>
                         </Card>
                     </Col>
@@ -94,7 +103,7 @@ const AdminDashboard = () => {
                         <Card className="text-center shadow" style={{ borderTop: '4px solid #ffc107' }}>
                             <Card.Body>
                                 <h2 className="mb-0 text-warning">{stats.approvalRate}%</h2>
-                                <small className="text-muted">Approval Rate</small>
+                                <small className="text-dark">Approval Rate</small>
                             </Card.Body>
                         </Card>
                     </Col>
@@ -102,7 +111,7 @@ const AdminDashboard = () => {
                         <Card className="text-center shadow" style={{ borderTop: '4px solid #e91e63' }}>
                             <Card.Body>
                                 <h2 className="mb-0" style={{ color: '#e91e63' }}>{stats.totalUsers || 0}</h2>
-                                <small className="text-muted">Total Users</small>
+                                <small className="text-dark">Total Users</small>
                             </Card.Body>
                         </Card>
                     </Col>
@@ -113,8 +122,8 @@ const AdminDashboard = () => {
                     {/* Projects by Status */}
                     <Col md={6}>
                         <Card className="shadow">
-                            <Card.Header style={{ backgroundColor: '#051738ff', color: 'white' }}>
-                                <h5 className="mb-0">Projects by Status</h5>
+                            <Card.Header style={{ backgroundColor: '#87CEEB', color: 'white' }}>
+                                <h4 className="mb-0" style={{ fontWeight: 'bold', letterSpacing: '0.3px' }}>Projects by Status</h4>
                             </Card.Header>
                             <Card.Body>
                                 <ResponsiveContainer width="100%" height={300}>
@@ -149,8 +158,8 @@ const AdminDashboard = () => {
                     {/* Projects by Faculty */}
                     <Col md={6}>
                         <Card className="shadow">
-                            <Card.Header style={{ backgroundColor: '#051738ff', color: 'white' }}>
-                                <h5 className="mb-0">Projects by Faculty</h5>
+                            <Card.Header style={{ backgroundColor: '#87CEEB', color: 'white' }}>
+                                <h4 className="mb-0" style={{ fontWeight: 'bold', letterSpacing: '0.3px' }}>Projects by Faculty</h4>
                             </Card.Header>
                             <Card.Body>
                                 <ResponsiveContainer width="100%" height={300}>
@@ -171,8 +180,8 @@ const AdminDashboard = () => {
                 <Row className="mb-4">
                     <Col md={6}>
                         <Card className="shadow">
-                            <Card.Header style={{ backgroundColor: '#051738ff', color: 'white' }}>
-                                <h5 className="mb-0">Trending Technologies</h5>
+                            <Card.Header style={{ backgroundColor: '#87CEEB', color: 'white' }}>
+                                <h4 className="mb-0" style={{ fontWeight: 'bold', letterSpacing: '0.3px' }}>Trending Technologies</h4>
                             </Card.Header>
                             <Card.Body>
                                 {stats.trendingTech?.length > 0 ? (
@@ -186,7 +195,7 @@ const AdminDashboard = () => {
                                         </BarChart>
                                     </ResponsiveContainer>
                                 ) : (
-                                    <p className="text-muted text-center">No data available</p>
+                                    <p className="text-white text-center">No data available</p>
                                 )}
                             </Card.Body>
                         </Card>
@@ -194,8 +203,8 @@ const AdminDashboard = () => {
 
                     <Col md={6}>
                         <Card className="shadow">
-                            <Card.Header style={{ backgroundColor: '#051738ff', color: 'white' }}>
-                                <h5 className="mb-0">Most Active Innovators</h5>
+                            <Card.Header style={{ backgroundColor: '#87CEEB', color: 'white' }}>
+                                <h4 className="mb-0" style={{ fontWeight: 'bold', letterSpacing: '0.3px' }}>Most Active Innovators</h4>
                             </Card.Header>
                             <Card.Body style={{ maxHeight: '350px', overflowY: 'auto' }}>
                                 {stats.activeInnovators?.length > 0 ? (
@@ -218,7 +227,7 @@ const AdminDashboard = () => {
                                         </tbody>
                                     </Table>
                                 ) : (
-                                    <p className="text-muted text-center">No data available</p>
+                                    <p className="text-white text-center">No data available</p>
                                 )}
                             </Card.Body>
                         </Card>
@@ -227,8 +236,8 @@ const AdminDashboard = () => {
 
                 {/* Recent Activity */}
                 <Card className="shadow">
-                    <Card.Header style={{ backgroundColor: '#051738ff', color: 'white' }}>
-                        <h5 className="mb-0">Recent Activity</h5>
+                    <Card.Header style={{ backgroundColor: '#87CEEB', color: 'white' }}>
+                        <h4 className="mb-0" style={{ fontWeight: 'bold', letterSpacing: '0.3px' }}>Recent Activity</h4>
                     </Card.Header>
                     <Card.Body>
                         {stats.recentProjects?.length > 0 ? (
@@ -262,7 +271,7 @@ const AdminDashboard = () => {
                                 </tbody>
                             </Table>
                         ) : (
-                            <p className="text-muted text-center">No recent activity</p>
+                            <p className="text-white text-center">No recent activity</p>
                         )}
                     </Card.Body>
                 </Card>

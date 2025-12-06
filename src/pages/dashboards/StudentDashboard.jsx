@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { Container, Row, Col, Card, Button, Form, Alert, Table, Badge, ProgressBar } from 'react-bootstrap';
+import { Container, Row, Col, Card, Button, Form, Alert, Table, Badge, ProgressBar, Modal } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import AuthContext from '../../context/AuthContext';
 import axios from 'axios';
@@ -21,6 +21,9 @@ const StudentDashboard = () => {
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [editProject, setEditProject] = useState(null);
+    const [editData, setEditData] = useState({ title: '', description: '', category: '', technologies: '', github_link: '' });
+    const [editFile, setEditFile] = useState(null);
 
     const categories = [
         'Agricultural Biotechnology',
@@ -122,15 +125,24 @@ const StudentDashboard = () => {
                 <div className="mb-4 d-flex justify-content-between align-items-center">
                     <div>
                         <h2 className="text-white mb-2">Student Dashboard</h2>
-                        <p className="text-white-50 mb-0">Welcome back, {user?.name}!</p>
+                        <p className="text-white mb-0">Welcome back, {user?.name}!</p>
                     </div>
-                    <Button 
-                        variant="outline-light"
-                        size="sm"
-                        onClick={() => navigate('/change-password')}
-                    >
-                        <i className="bi bi-key me-2"></i>Change Password
-                    </Button>
+                    <div className="d-flex gap-2">
+                        <Button 
+                            variant="outline-light"
+                            size="sm"
+                            onClick={() => navigate('/profile')}
+                        >
+                            <i className="bi bi-person-circle me-2"></i>My Profile
+                        </Button>
+                        <Button 
+                            variant="outline-light"
+                            size="sm"
+                            onClick={() => navigate('/change-password')}
+                        >
+                            <i className="bi bi-key me-2"></i>Change Password
+                        </Button>
+                    </div>
                 </div>
 
                 {message && <Alert variant="success" onClose={() => setMessage('')} dismissible>{message}</Alert>}
@@ -191,8 +203,8 @@ const StudentDashboard = () => {
                 {/* Project Submission Form */}
                 {showForm && (
                     <Card className="mb-4 shadow">
-                        <Card.Header style={{ backgroundColor: '#051738ff', color: 'white' }}>
-                            <h5 className="mb-0">Submit New Innovation Project</h5>
+                        <Card.Header style={{ backgroundColor: '#87CEEB', color: 'white' }}>
+                            <h4 className="mb-0" style={{ fontWeight: 'bold', letterSpacing: '0.3px' }}>Submit New Innovation Project</h4>
                         </Card.Header>
                         <Card.Body className="p-4">
                             <Form onSubmit={handleSubmit}>
@@ -299,8 +311,8 @@ const StudentDashboard = () => {
 
                 {/* My Projects List */}
                 <Card className="shadow">
-                    <Card.Header style={{ backgroundColor: '#051738ff', color: 'white' }}>
-                        <h5 className="mb-0">My Projects</h5>
+                    <Card.Header style={{ backgroundColor: '#87CEEB', color: 'white' }}>
+                        <h4 className="mb-0" style={{ fontWeight: 'bold', letterSpacing: '0.3px' }}>My Projects</h4>
                     </Card.Header>
                     <Card.Body>
                         {projects.length === 0 ? (
@@ -316,6 +328,7 @@ const StudentDashboard = () => {
                                         <th>Status</th>
                                         <th>Submitted</th>
                                         <th>Feedback</th>
+                                        <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -339,6 +352,19 @@ const StudentDashboard = () => {
                                                     <small className="text-muted">No feedback yet</small>
                                                 )}
                                             </td>
+                                            <td>
+                                                <Button size="sm" variant="warning" onClick={() => {
+                                                    setEditProject(project);
+                                                    setEditData({
+                                                        title: project.title || '',
+                                                        description: project.description || '',
+                                                        category: project.category || '',
+                                                        technologies: project.technologies || '',
+                                                        github_link: project.github_link || ''
+                                                    });
+                                                    setEditFile(null);
+                                                }}>Edit</Button>
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -347,6 +373,71 @@ const StudentDashboard = () => {
                     </Card.Body>
                 </Card>
             </Container>
+
+            {/* Edit Project Modal */}
+            <Modal show={!!editProject} onHide={() => setEditProject(null)} centered>
+                <Modal.Header closeButton style={{ backgroundColor: '#87CEEB', color: 'white' }}>
+                    <Modal.Title>Edit Project</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form onSubmit={async (e) => {
+                        e.preventDefault();
+                        setLoading(true);
+                        setError('');
+                        setMessage('');
+                        try {
+                            const token = localStorage.getItem('token');
+                            const data = new FormData();
+                            Object.entries(editData).forEach(([k, v]) => data.append(k, v));
+                            if (editFile) data.append('document', editFile);
+                            await axios.put(`http://localhost:5000/api/projects/${editProject.id}`, data, {
+                                headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` }
+                            });
+                            setMessage('Project updated and sent for re-approval.');
+                            setEditProject(null);
+                            setEditFile(null);
+                            fetchMyProjects();
+                        } catch (err) {
+                            setError(err.response?.data?.message || 'Error updating project');
+                        } finally {
+                            setLoading(false);
+                        }
+                    }}>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Title</Form.Label>
+                            <Form.Control value={editData.title} onChange={(e)=>setEditData({...editData, title: e.target.value})} />
+                        </Form.Group>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Description</Form.Label>
+                            <Form.Control as="textarea" rows={3} value={editData.description} onChange={(e)=>setEditData({...editData, description: e.target.value})} />
+                        </Form.Group>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Category</Form.Label>
+                            <Form.Select value={editData.category} onChange={(e)=>setEditData({...editData, category: e.target.value})}>
+                                <option value="">Select category</option>
+                                {categories.map(c => <option key={c} value={c}>{c}</option>)}
+                            </Form.Select>
+                        </Form.Group>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Technologies</Form.Label>
+                            <Form.Control value={editData.technologies} onChange={(e)=>setEditData({...editData, technologies: e.target.value})} />
+                        </Form.Group>
+                        <Form.Group className="mb-3">
+                            <Form.Label>GitHub Link</Form.Label>
+                            <Form.Control value={editData.github_link} onChange={(e)=>setEditData({...editData, github_link: e.target.value})} />
+                        </Form.Group>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Documentation (PDF)</Form.Label>
+                            <Form.Control type="file" accept=".pdf" onChange={(e)=>setEditFile(e.target.files[0])} />
+                            <Form.Text className="text-muted">Updating will set status to Pending for supervisor re-approval.</Form.Text>
+                        </Form.Group>
+                        <div className="d-flex justify-content-end">
+                            <Button variant="secondary" className="me-2" onClick={()=>setEditProject(null)}>Cancel</Button>
+                            <Button type="submit" style={{ backgroundColor: '#e91e63', borderColor: '#e91e63' }} disabled={loading}>Save Changes</Button>
+                        </div>
+                    </Form>
+                </Modal.Body>
+            </Modal>
         </div>
     );
 };

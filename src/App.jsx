@@ -14,6 +14,7 @@ import UserManagement from './pages/UserManagement';
 import DashboardRouter from './pages/DashboardRouter';
 import Projects from './pages/Projects';
 import ProjectDetails from './pages/ProjectDetails';
+import Profile from './pages/Profile';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
@@ -48,6 +49,7 @@ function AppContent() {
                 {/* Removed public registration route */}
                 <Route path="/admin/users" element={<UserManagement />} />
                 <Route path="/dashboard" element={<DashboardRouter />} />
+                <Route path="/profile" element={<Profile />} />
                 <Route path="/change-password" element={<ChangePassword />} />
                 <Route path="/projects" element={<Projects />} />
                 <Route path="/projects/:id" element={<ProjectDetails />} />

@@ -12,6 +12,7 @@ const SupervisorDashboard = () => {
     const [message, setMessage] = useState('');
     const [selectedProject, setSelectedProject] = useState(null);
     const [showModal, setShowModal] = useState(false);
+    const [showDetailsModal, setShowDetailsModal] = useState(false);
     const [feedback, setFeedback] = useState('');
     const [reviewAction, setReviewAction] = useState('');
 
@@ -71,15 +72,24 @@ const SupervisorDashboard = () => {
                 <div className="mb-4 d-flex justify-content-between align-items-center">
                     <div>
                         <h2 className="text-white mb-2">Supervisor Dashboard</h2>
-                        <p className="text-white-50 mb-0">Welcome back, {user?.name}!</p>
+                        <p className="text-white mb-0">Welcome back, {user?.name}!</p>
                     </div>
-                    <Button 
-                        variant="outline-light"
-                        size="sm"
-                        onClick={() => navigate('/change-password')}
-                    >
-                        <i className="bi bi-key me-2"></i>Change Password
-                    </Button>
+                    <div className="d-flex gap-2">
+                        <Button 
+                            variant="outline-light"
+                            size="sm"
+                            onClick={() => navigate('/profile')}
+                        >
+                            <i className="bi bi-person-circle me-2"></i>My Profile
+                        </Button>
+                        <Button 
+                            variant="outline-light"
+                            size="sm"
+                            onClick={() => navigate('/change-password')}
+                        >
+                            <i className="bi bi-key me-2"></i>Change Password
+                        </Button>
+                    </div>
                 </div>
 
                 {message && <Alert variant="success" onClose={() => setMessage('')} dismissible>{message}</Alert>}
@@ -90,7 +100,7 @@ const SupervisorDashboard = () => {
                         <Card className="text-center shadow" style={{ borderTop: '4px solid #ffc107' }}>
                             <Card.Body>
                                 <h3 className="mb-0 text-warning">{pendingCount}</h3>
-                                <small className="text-muted">Pending Review</small>
+                                <small className="text-dark">Pending Review</small>
                             </Card.Body>
                         </Card>
                     </Col>
@@ -98,7 +108,7 @@ const SupervisorDashboard = () => {
                         <Card className="text-center shadow" style={{ borderTop: '4px solid #28a745' }}>
                             <Card.Body>
                                 <h3 className="mb-0 text-success">{approvedCount}</h3>
-                                <small className="text-muted">Approved</small>
+                                <small className="text-dark">Approved</small>
                             </Card.Body>
                         </Card>
                     </Col>
@@ -106,7 +116,7 @@ const SupervisorDashboard = () => {
                         <Card className="text-center shadow" style={{ borderTop: '4px solid #dc3545' }}>
                             <Card.Body>
                                 <h3 className="mb-0 text-danger">{rejectedCount}</h3>
-                                <small className="text-muted">Rejected</small>
+                                <small className="text-dark">Rejected</small>
                             </Card.Body>
                         </Card>
                     </Col>
@@ -114,8 +124,8 @@ const SupervisorDashboard = () => {
 
                 {/* Projects Table */}
                 <Card className="shadow">
-                    <Card.Header style={{ backgroundColor: '#051738ff', color: 'white' }}>
-                        <h5 className="mb-0">Assigned Projects</h5>
+                    <Card.Header style={{ backgroundColor: '#87CEEB', color: 'white' }}>
+                        <h4 className="mb-0" style={{ fontWeight: 'bold', letterSpacing: '0.3px' }}>Assigned Projects</h4>
                     </Card.Header>
                     <Card.Body>
                         {loading ? (
@@ -125,7 +135,7 @@ const SupervisorDashboard = () => {
                                 </div>
                             </div>
                         ) : projects.length === 0 ? (
-                            <Alert variant="info">No projects assigned to you yet.</Alert>
+                            <Alert variant="dark" className="text-white">No projects assigned to you yet.</Alert>
                         ) : (
                             <Table hover responsive>
                                 <thead>
@@ -157,35 +167,39 @@ const SupervisorDashboard = () => {
                                             </td>
                                             <td>
                                                 {project.feedback ? (
-                                                    <small className="text-muted">{project.feedback}</small>
+                                                    <small>{project.feedback}</small>
                                                 ) : (
-                                                    <small className="text-muted">—</small>
+                                                    <small>—</small>
                                                 )}
                                             </td>
                                             <td>{new Date(project.createdAt).toLocaleDateString()}</td>
                                             <td>
-                                                {project.status === 'pending' && (
-                                                    <>
-                                                        <Button
-                                                            size="sm"
-                                                            variant="success"
-                                                            className="me-2"
-                                                            onClick={() => openReviewModal(project, 'approved')}
-                                                        >
-                                                            Approve
-                                                        </Button>
-                                                        <Button
-                                                            size="sm"
-                                                            variant="danger"
-                                                            onClick={() => openReviewModal(project, 'rejected')}
-                                                        >
-                                                            Reject
-                                                        </Button>
-                                                    </>
-                                                )}
-                                                {project.status !== 'pending' && (
-                                                    <small className="text-muted">Reviewed</small>
-                                                )}
+                                                <Button
+                                                    size="sm"
+                                                    variant="info"
+                                                    className="me-2"
+                                                    onClick={() => {
+                                                        setSelectedProject(project);
+                                                        setShowDetailsModal(true);
+                                                    }}
+                                                >
+                                                    View
+                                                </Button>
+                                                <Button
+                                                    size="sm"
+                                                    variant="success"
+                                                    className="me-2"
+                                                    onClick={() => openReviewModal(project, 'approved')}
+                                                >
+                                                    {project.status === 'approved' ? 'Re-Approve' : 'Approve'}
+                                                </Button>
+                                                <Button
+                                                    size="sm"
+                                                    variant="danger"
+                                                    onClick={() => openReviewModal(project, 'rejected')}
+                                                >
+                                                    {project.status === 'rejected' ? 'Re-Reject' : 'Reject'}
+                                                </Button>
                                             </td>
                                         </tr>
                                     ))}
@@ -230,6 +244,62 @@ const SupervisorDashboard = () => {
                     >
                         {reviewAction === 'approved' ? 'Approve Project' : 'Reject Project'}
                     </Button>
+                </Modal.Footer>
+            </Modal>
+
+            {/* Project Details Modal */}
+            <Modal show={showDetailsModal} onHide={() => setShowDetailsModal(false)} size="lg" centered>
+                <Modal.Header closeButton style={{ backgroundColor: '#87CEEB', color: 'white' }}>
+                    <Modal.Title>Project Details</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {selectedProject && (
+                        <div>
+                            <h5>{selectedProject.title}</h5>
+                            <hr />
+                            <p><strong>Student:</strong> {selectedProject.Student?.name}</p>
+                            <p><strong>Category:</strong> {selectedProject.category}</p>
+                            <p><strong>Technologies:</strong> {selectedProject.technologies}</p>
+                            <p><strong>Status:</strong> <Badge bg={
+                                selectedProject.status === 'approved' ? 'success' :
+                                selectedProject.status === 'rejected' ? 'danger' : 'warning'
+                            }>{selectedProject.status.toUpperCase()}</Badge></p>
+                            <p><strong>Submitted:</strong> {new Date(selectedProject.createdAt).toLocaleString()}</p>
+                            <hr />
+                            <h6>Description:</h6>
+                            <p>{selectedProject.description}</p>
+                            {selectedProject.github_link && (
+                                <p><strong>GitHub:</strong> <a href={selectedProject.github_link} target="_blank" rel="noopener noreferrer">{selectedProject.github_link}</a></p>
+                            )}
+                            {selectedProject.document_url && (
+                                <div className="mb-3">
+                                    <strong>Document: </strong>
+                                    <Button 
+                                        size="sm" 
+                                        variant="primary" 
+                                        onClick={() => {
+                                            const url = selectedProject.document_url.startsWith('http') 
+                                                ? selectedProject.document_url 
+                                                : `http://localhost:5000/${selectedProject.document_url}`;
+                                            window.open(url, '_blank');
+                                        }}
+                                    >
+                                        <i className="bi bi-file-earmark-text me-1"></i>View Document
+                                    </Button>
+                                </div>
+                            )}
+                            {selectedProject.feedback && (
+                                <>
+                                    <hr />
+                                    <h6>Feedback:</h6>
+                                    <p className="text-muted">{selectedProject.feedback}</p>
+                                </>
+                            )}
+                        </div>
+                    )}
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowDetailsModal(false)}>Close</Button>
                 </Modal.Footer>
             </Modal>
         </div>
